@@ -1,0 +1,12 @@
+create_table 30
+compare_pairs ./test_files/3_1.txt:./test_files/3_2.txt ./test_files/3_3.txt:./test_files/3_4.txt ./test_files/3_5.txt:./test_files/3_6.txt ./test_files/3_7.txt:./test_files/3_8.txt ./test_files/3_9.txt:./test_files/3_10.txt ./test_files/3_11.txt:./test_files/3_12.txt ./test_files/3_1.txt:./test_files/3_3.txt ./test_files/3_2.txt:./test_files/3_4.txt ./test_files/3_3.txt:./test_files/3_5.txt ./test_files/3_4.txt:./test_files/3_6.txt ./test_files/3_5.txt:./test_files/3_7.txt ./test_files/3_6.txt:./test_files/3_8.txt ./test_files/3_9.txt:./test_files/3_11.txt ./test_files/3_10.txt:./test_files/3_12.txt ./test_files/3_11.txt:./test_files/3_13.txt ./test_files/3_12.txt:./test_files/3_14.txt ./test_files/3_1.txt:./test_files/3_4.txt ./test_files/3_4.txt:./test_files/3_12.txt
+remove_block 0
+remove_block 1
+remove_block 2
+remove_block 3
+remove_block 4
+remove_block 5
+remove_operation 8 3
+remove_operation 8 7
+remove_operation 8 6
+remove_operation 8 5

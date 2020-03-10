@@ -1,0 +1,8 @@
+*.a
+*.o
+*.exe
+*.out
+*.so
+**/.vscode
+*.rar
+*.zip

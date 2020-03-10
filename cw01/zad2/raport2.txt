@@ -1,0 +1,45 @@
+Mala ilosc plikow - bardzo podobne
+    porownywanie_par   real 0.020s   user 0.000s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.030s   user 0.010s   sys 0.000s
+
+Mala ilosc plikow - srednio podobne
+    porownywanie_par   real 0.020s   user 0.000s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.020s   user 0.010s   sys 0.000s
+
+Mala ilosc plikow - malo podobne
+    porownywanie_par   real 0.020s   user 0.000s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.030s   user 0.010s   sys 0.000s
+
+Srednia ilosc plikow - bardzo podobne
+    porownywanie_par   real 0.030s   user 0.010s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.040s   user 0.010s   sys 0.010s
+
+Srednia ilosc plikow - srednio podobne
+    porownywanie_par   real 0.040s   user 0.010s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.030s   user 0.020s   sys 0.000s
+
+Srednia ilosc plikow - malo podobne
+    porownywanie_par   real 0.030s   user 0.010s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.050s   user 0.010s   sys 0.000s
+
+Duza ilosc plikow - bardzo podobne
+    porownywanie_par   real 0.100s   user 0.030s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.070s   user 0.030s   sys 0.010s
+
+Duza ilosc plikow - srednio podobne
+    porownywanie_par   real 0.090s   user 0.040s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.080s   user 0.030s   sys 0.010s
+
+Duza ilosc plikow - malo podobne
+    porownywanie_par   real 0.080s   user 0.030s   sys 0.000s
+     usuwanie_blokow   real 0.000s   user 0.000s   sys 0.000s
+        naprzemienne   real 0.070s   user 0.030s   sys 0.010s
+

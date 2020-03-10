@@ -1,0 +1,19 @@
+start_timer
+create_table 30
+compare_pairs ./test_files/2_1.txt:./test_files/2_2.txt ./test_files/2_3.txt:./test_files/2_4.txt ./test_files/2_5.txt:./test_files/2_6.txt
+end_timer porownywanie_par
+start_timer
+remove_block 0
+remove_block 1
+remove_block 2
+end_timer usuwanie_blokow
+start_timer
+compare_pairs ./test_files/2_7.txt:./test_files/2_8.txt
+remove_block 0
+compare_pairs ./test_files/2_9.txt:./test_files/2_10.txt
+remove_block 0
+compare_pairs ./test_files/2_11.txt:./test_files/2_12.txt
+remove_block 0
+compare_pairs ./test_files/2_13.txt:./test_files/2_14.txt
+remove_block 0
+end_timer naprzemienne

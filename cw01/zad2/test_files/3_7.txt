@@ -1,0 +1,15 @@
+elevator
+manufacturer
+activity
+university
+revolution
+imagination
+anxiety
+engineering
+priority
+communication
+negotiation
+economics
+enthusiasm
+recommendation
+psychology
