@@ -10,7 +10,7 @@ static:
 
 clean:
 	make -C $(LIB_PATH) clean
-	rm -f *.o main temp.txt report2.txt
+	rm -f *.o main temp.txt $(REPORT_FILENAME)
 
 valgrind: static
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./main `cat ./test_files/args_1.txt | tr '\r\n' ' '`

@@ -1,0 +1,1 @@
+Wygenerowany raport pokazuje, że program działa najszybciej, gdy jest biblioteka jest skompilowana statycznie. Opreracje wejścia/wyjścia zajmują najwięcej czasu. W każdym przypadku usuwanie bloków było bardzo szybkie. Wyniki mogą być nieco zaburzone z powodu testowania programu na maszynie wirtualnej.
