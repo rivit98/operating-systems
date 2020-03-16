@@ -1,0 +1,3 @@
+Wnioski:
+Operacje kopiowania nie zajmują wiele czasu. Różnice pomiędzy funkcjami bibliotecznymi, a systemowymi są pomijalne.
+Operacje sortowania w wielu przypadkach jest szybsza, gdy używamy funkcji bibliotecznych. Dzieje się tak, ponieważ funkcje te stosują wewnętrzne bufory, które przyspieszają operacje zapisu i odczytu. Jednak wraz ze wzrostem długości rekordu zaczyna być widoczna przewaga funkcji systemowych, które nie używają wewnętrznego bufora. Funkcje biblioteczne muszą zapełnić bufor, a potem go zapisać (i tak pare razy, zależnie od długości bufora), co powoduje wzrost czasu odczytu/zapisu

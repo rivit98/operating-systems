@@ -1,0 +1,180 @@
+Generating 500 records (1 byte each)
+
+Sorting 500 (1 byte) lib
+> user 0.000s   sys 0.350s
+
+Sorting 500 (1 byte) sys
+> user 0.000s   sys 0.500s
+
+Copying 500 (1 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 500 (1 byte) sys
+> user 0.020s   sys 0.000s
+
+
+Generating 500 records (4 byte each)
+
+Sorting 500 (4 byte) lib
+> user 0.000s   sys 0.270s
+
+Sorting 500 (4 byte) sys
+> user 0.000s   sys 0.360s
+
+Copying 500 (4 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 500 (4 byte) sys
+> user 0.020s   sys 0.000s
+
+
+Generating 500 records (512 byte each)
+
+Sorting 500 (512 byte) lib
+> user 0.000s   sys 0.420s
+
+Sorting 500 (512 byte) sys
+> user 0.000s   sys 0.380s
+
+Copying 500 (512 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 500 (512 byte) sys
+> user 0.020s   sys 0.000s
+
+
+Generating 500 records (1024 byte each)
+
+Sorting 500 (1024 byte) lib
+> user 0.000s   sys 0.420s
+
+Sorting 500 (1024 byte) sys
+> user 0.090s   sys 0.290s
+
+Copying 500 (1024 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 500 (1024 byte) sys
+> user 0.020s   sys 0.000s
+
+
+Generating 500 records (4096 byte each)
+
+Sorting 500 (4096 byte) lib
+> user 0.210s   sys 0.430s
+
+Sorting 500 (4096 byte) sys
+> user 0.100s   sys 0.320s
+
+Copying 500 (4096 byte) lib
+> user 0.000s   sys 0.010s
+
+Copying 500 (4096 byte) sys
+> user 0.000s   sys 0.020s
+
+
+Generating 500 records (8192 byte each)
+
+Sorting 500 (8192 byte) lib
+> user 0.000s   sys 1.030s
+
+Sorting 500 (8192 byte) sys
+> user 0.000s   sys 0.460s
+
+Copying 500 (8192 byte) lib
+> user 0.010s   sys 0.010s
+
+Copying 500 (8192 byte) sys
+> user 0.020s   sys 0.000s
+
+
+Generating 3000 records (1 byte each)
+
+Sorting 3000 (1 byte) lib
+> user 0.340s   sys 1.020s
+
+Sorting 3000 (1 byte) sys
+> user 0.000s   sys 4.710s
+
+Copying 3000 (1 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 3000 (1 byte) sys
+> user 0.000s   sys 0.140s
+
+
+Generating 3000 records (4 byte each)
+
+Sorting 3000 (4 byte) lib
+> user 0.140s   sys 3.100s
+
+Sorting 3000 (4 byte) sys
+> user 0.000s   sys 3.380s
+
+Copying 3000 (4 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 3000 (4 byte) sys
+> user 0.150s   sys 0.000s
+
+
+Generating 3000 records (512 byte each)
+
+Sorting 3000 (512 byte) lib
+> user 0.040s   sys 4.580s
+
+Sorting 3000 (512 byte) sys
+> user 0.050s   sys 5.010s
+
+Copying 3000 (512 byte) lib
+> user 0.000s   sys 0.000s
+
+Copying 3000 (512 byte) sys
+> user 0.190s   sys 0.000s
+
+
+Generating 3000 records (1024 byte each)
+
+Sorting 3000 (1024 byte) lib
+> user 0.000s   sys 3.630s
+
+Sorting 3000 (1024 byte) sys
+> user 0.170s   sys 3.750s
+
+Copying 3000 (1024 byte) lib
+> user 0.000s   sys 0.040s
+
+Copying 3000 (1024 byte) sys
+> user 0.000s   sys 0.300s
+
+
+Generating 3000 records (4096 byte each)
+
+Sorting 3000 (4096 byte) lib
+> user 0.150s   sys 6.470s
+
+Sorting 3000 (4096 byte) sys
+> user 0.000s   sys 4.520s
+
+Copying 3000 (4096 byte) lib
+> user 0.080s   sys 0.000s
+
+Copying 3000 (4096 byte) sys
+> user 0.000s   sys 0.160s
+
+
+Generating 3000 records (8192 byte each)
+
+Sorting 3000 (8192 byte) lib
+> user 0.060s   sys 10.930s
+
+Sorting 3000 (8192 byte) sys
+> user 0.000s   sys 4.520s
+
+Copying 3000 (8192 byte) lib
+> user 0.000s   sys 0.160s
+
+Copying 3000 (8192 byte) sys
+> user 0.000s   sys 0.160s
+
+
