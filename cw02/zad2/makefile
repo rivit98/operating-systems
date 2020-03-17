@@ -1,12 +1,9 @@
 CC=gcc
 CFLAGS=-Wall -Wno-unused-variable
 
-all: find.o find_nftw.o find_lib.o
-	$(CC) $(CFLAGS) find.o find_lib.o -o find
-	$(CC) $(CFLAGS) find_nftw.o find_lib.o -o find_nftw
-
-%.o : %.c find_lib.h
-	$(CC) $(CFLAGS) -c $< -o $@
+all:
+	$(CC) $(CFLAGS) find.c find_lib.c -o find
+	$(CC) $(CFLAGS) -D USE_NFTW find.c find_lib.c -o find_nftw
 
 clean:
 	rm -f find find_nftw *.o

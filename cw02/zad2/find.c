@@ -91,7 +91,11 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	#if defined USE_NFTW
+	find_files_nftw(dir, &op);
+	#else
 	find_files(dir, &op);
+	#endif
 
 	return 0;
 }
