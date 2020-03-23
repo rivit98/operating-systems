@@ -1,0 +1,1 @@
+macierz_in1.txt macierz_in2.txt macierz_out.txt
