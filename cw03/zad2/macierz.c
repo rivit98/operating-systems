@@ -12,76 +12,114 @@
 
 
 const int MAX_LINE_LEN = 2048;
-const char* temp_folder = "tmp";
+const char *temp_folder = "tmp";
 
 typedef struct{
-	const char* list_filename;
-	char* out_filename;
-	int proc_num;
-	int proc_time;
+	const char *list_filename;
+	unsigned int proc_num;
+	unsigned int proc_time;
+	unsigned int matrix_pairs;
 } Options;
 
 typedef struct{
-	int** data;
+	int **data;
 	unsigned int cols;
 	unsigned int rows;
 } Matrix;
 
+typedef struct{
+	Matrix* A_matrices;
+	Matrix* B_matrices;
+	char **output_files;
+	unsigned int size;
+} List;
 
 
-void load_matrices(Matrix* A, Matrix* B, Options* op);
-void load_matrix(Matrix* matrix, char* file_name);
-unsigned int get_matrix_rows(FILE* fp);
-unsigned int get_matrix_columns(FILE* fp);
-char* rtrim(char *s);
-void free_matrix(Matrix* A);
-void dump_matrix(Matrix* A);
-void create_marker_file(char* out_filename, int cols);
-unsigned int worker_cb(const char* out_filename, Matrix* A, Matrix* B, time_t deadline);
-void dump_matrix(Matrix* matrix);
+void load_pairs(List *list, const char *list_filename);
+void load_matrices(char *list_filename, Matrix *A, Matrix *B, char **out_filename);
+void load_matrix(Matrix *matrix, char *file_name);
+unsigned int get_matrix_rows(FILE *fp);
+unsigned int get_matrix_columns(FILE *fp);
+char *rtrim(char *s);
+void free_matrix(Matrix *A);
+void dump_matrix(Matrix *A);
+void create_marker_file(char *out_filename, int cols);
+unsigned int worker_cb(List *list, time_t deadline);
+void dump_matrix(Matrix *matrix);
+void multiply_column(const char *out_filename, Matrix *A, Matrix *B, int col_idx);
+void concat_parts(char* out_filename);
+int get_not_calculated_column(char *out_filename);
 
 
-void free_matrix(Matrix* matrix){
+void free_list(List *list){
+	for(int i = 0; i < list->size; i++){
+		free(list->output_files[i]);
+		free_matrix(&list->A_matrices[i]);
+		free_matrix(&list->B_matrices[i]);
+	}
+	free(list->A_matrices);
+	free(list->B_matrices);
+	free(list->output_files);
+}
+
+void free_matrix(Matrix *matrix){
 	for(int i = 0; i < matrix->rows; i++){
 		free(matrix->data[i]);
 	}
-
 	free(matrix->data);
-	matrix = NULL;
 }
 
-void dump_matrix(Matrix* matrix){
-	printf("\nrows %d | cols %d | data %p\n", matrix->rows, matrix->cols, matrix->data);
+void dump_matrix(Matrix *matrix){
+	printf("rows %d | cols %d | data %p\n", matrix->rows, matrix->cols, matrix->data);
 	for(int i = 0; i < matrix->rows; i++){
 		for(int j = 0; j < matrix->cols; j++){
 			printf("%4d ", matrix->data[i][j]);
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
-void load_matrices(Matrix* A, Matrix* B, Options* op){
-	FILE* fp = fopen(op->list_filename, "rt");
+void load_pairs(List *list, const char *list_filename){
+	FILE *fp = fopen(list_filename, "rt");
 	if(!fp){
-		printf("Error during opening file %s\n", op->list_filename);
+		printf("Error during opening file %s\n", list_filename);
 		exit(EXIT_FAILURE);
 	}
 
+	int i = 0;
 	char buffer[256]; //just hardcode line len
-	fread(&buffer, sizeof(char), sizeof(buffer) - 1, fp);
-	fclose(fp);
+	while(fgets(buffer, sizeof(buffer)-1, fp) != NULL && i < list->size) {
+		if(strlen(buffer) < 5){
+			list->size--;
+			continue;
+		}
+		load_matrices(&buffer[0], &list->A_matrices[i], &list->B_matrices[i], &list->output_files[i]);
+		create_marker_file(list->output_files[i], list->B_matrices[i].cols);
+		i++;
+	}
 
-	const char* token = " ";
-	char* m1 = strtok(buffer, token);
-	char* m2 = strtok(NULL, token);
-	op->out_filename = strdup(strtok(NULL, token));
+	fclose(fp);
+}
+
+void load_matrices(char *buffer, Matrix *A, Matrix *B, char **out_filename){
+	const char *token = " ";
+	char *m1 = strtok(buffer, token);
+	char *m2 = strtok(NULL, token);
+	*out_filename = strdup(strtok(NULL, token));
+	rtrim(*out_filename);
 
 	load_matrix(A, m1);
 	load_matrix(B, m2);
+
+	if(A->cols != B->rows){
+		printf("Wrong matrices dimensions - cannot multiply!\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
-void load_matrix(Matrix* matrix, char* file_name){
-	FILE* fp = fopen(file_name, "rt");
+void load_matrix(Matrix *matrix, char *file_name){
+	FILE *fp = fopen(file_name, "rt");
 	if(!fp){
 		printf("Error during opening file %s\n", file_name);
 		exit(EXIT_FAILURE);
@@ -96,8 +134,8 @@ void load_matrix(Matrix* matrix, char* file_name){
 	
 	int row_indexer = 0;
 	int col_indexer = 0;
-	const char* token = " ";
-	char* part;
+	const char *token = " ";
+	char *part;
 	char buf[MAX_LINE_LEN];
 	rewind(fp);
 	while(fgets(buf, sizeof(buf)-1, fp) != NULL){
@@ -125,7 +163,18 @@ void load_matrix(Matrix* matrix, char* file_name){
 	fclose(fp);
 }
 
-unsigned int get_matrix_rows(FILE* fp){
+unsigned int get_number_of_lines(const char *file_name){
+	FILE *fp = fopen(file_name, "rt");
+	if(!fp){
+		printf("Error during opening file %s\n", file_name);
+		exit(EXIT_FAILURE);
+	}
+	unsigned int ret = get_matrix_rows(fp);
+	fclose(fp);
+	return ret;
+}
+
+unsigned int get_matrix_rows(FILE *fp){
 	rewind(fp);
 	unsigned int ret = 0;
 	char c, last;
@@ -142,20 +191,13 @@ unsigned int get_matrix_rows(FILE* fp){
 	return ret;
 }
 
-char* rtrim(char *s){
-	char* back = s + strlen(s);
-	while(isspace(*--back));
-	*(back+1) = '\0';
-	return s;
-}
-
-unsigned int get_matrix_columns(FILE* fp){
+unsigned int get_matrix_columns(FILE *fp){
 	rewind(fp);
 	unsigned int ret = 0;
 	char buf[MAX_LINE_LEN];
 	fgets(buf, sizeof(buf)-1, fp);
 	rtrim(buf);
-	char* c = &buf[0];
+	char *c = &buf[0];
 	while(*c != '\0'){
 		if(*c == ' '){
 			ret++;
@@ -165,7 +207,14 @@ unsigned int get_matrix_columns(FILE* fp){
 	return ret + 1;
 }
 
-void create_marker_file(char* out_filename, int cols){
+char *rtrim(char *s){
+	char *back = s + strlen(s);
+	while(isspace(*--back));
+	*(back+1) = '\0';
+	return s;
+}
+
+void create_marker_file(char *out_filename, int cols){
 	int res = mkdir("./tmp", 0777);
 	if(res == -1){
 		if(errno == EEXIST){
@@ -176,8 +225,8 @@ void create_marker_file(char* out_filename, int cols){
 		}
 	}
 	char filename[256];
-	sprintf(filename, "./%s/%s_marker.txt", temp_folder, out_filename);
-	FILE* fp = fopen(filename, "w+");
+	sprintf(filename, "./%s/%s-marker.txt", temp_folder, out_filename);
+	FILE *fp = fopen(filename, "w+");
 	if(!fp){
 		printf("Error during creating %s\n", filename);
 		exit(EXIT_FAILURE);
@@ -191,59 +240,83 @@ void create_marker_file(char* out_filename, int cols){
 	fclose(fp);
 }
 
-int get_not_calculated_column(const char* out_filename){
+int get_not_calculated_column(char *out_filename){
 	char filename[256];
-	sprintf(filename, "./%s/%s_marker.txt", temp_folder, out_filename);
-	FILE* fp = fopen(filename, "r+");
+	sprintf(filename, "./%s/%s-marker.txt", temp_folder, out_filename);
+	FILE *fp = fopen(filename, "r+");
 	if(!fp){
-		printf("Error during creating %s\n", filename);
+		printf("Error during opening %s\n", filename);
 		exit(EXIT_FAILURE);
 	}
 
 	int fno = fileno(fp);
 	flock(fno, LOCK_EX);
 
-	int index = 0;
-	int c;
+	int index = 0, c = 0;
 	while ((c = fgetc(fp)) != EOF) {
 		if(c == '0'){
 			fseek(fp, index, SEEK_SET);
 			fputc('1', fp);
-			fflush(fp);
 			break;
 		}else{
 			index++;
 		}
 	}
-
+	fflush(fp);
 	flock(fno, LOCK_UN);
 	fclose(fp);
 	return (c == EOF) ? -1 : index;
 }
 
-unsigned int worker_cb(const char* out_filename, Matrix* A, Matrix* B, time_t deadline){
-	unsigned int ret = 0;
+void multiply_column(const char *out_filename, Matrix *A, Matrix *B, int col_idx){
+	char filename[256];
+	sprintf(filename, "./%s/%s_%d.txt", temp_folder, out_filename, col_idx);
 
-	for(;;){
-		// if(time(NULL) > deadline){
-		// 	printf("Time exceeded\n");
-		// 	break;
-		// }
-
-		int col_to_mult = get_not_calculated_column(out_filename);
-		if(col_to_mult == -1){
-			break;
-		}
-		printf("Calculating row: %d\n", col_to_mult);
-		// sleep(1);
-		ret++;
+	FILE *fp = fopen(filename, "w+");
+	if(!fp){
+		printf("Error during creating %s\n", filename);
+		exit(EXIT_FAILURE);
 	}
 
+	int sum = 0;
+	for(int row = 0; row < A->rows; row++){
+		for(int col = 0; col < A->cols; col++){
+			sum += A->data[row][col] * B->data[col][col_idx];
+		}
+		fprintf(fp, "%d \n", sum);
+		sum = 0;
+	}
+
+	fflush(fp);
+	fclose(fp);
+}
+
+unsigned int worker_cb(List *list, time_t deadline){
+	unsigned int ret = 0;
+	int col_to_mult;
+
+	for(int i = 0; i < list->size; i++){
+		while((col_to_mult = get_not_calculated_column(list->output_files[i])) != -1){
+			if(time(NULL) > deadline){
+				printf("Time exceeded\n");
+				break;
+			}
+
+			multiply_column(list->output_files[i], &list->A_matrices[i], &list->B_matrices[i], col_to_mult);
+			ret++;
+		}
+	}
 
 	return ret;
 }
 
-int main(int argc, char** argv) {
+void concat_parts(char* out_filename){
+	char command[1024];
+	sprintf(command, "paste ./%s/%s_* > ./out/%s", temp_folder, out_filename, out_filename);
+	system(command);
+}
+
+int main(int argc, char **argv) {
 	if (argc != 4) {
 		printf("Usage:\n");
 		printf("macierz lista proc_num time\n");
@@ -254,28 +327,39 @@ int main(int argc, char** argv) {
 	op.list_filename = argv[1];
 	op.proc_num = atoi(argv[2]);
 	op.proc_time = atoi(argv[3]);
+	op.matrix_pairs = get_number_of_lines(op.list_filename);
 
-	if(op.proc_num < 0 || op.proc_time < 0){
+	if(op.proc_num <= 0 || op.proc_time <= 0 || op.matrix_pairs <= 0){
 		printf("Please specify valid number\n");
 		return 0;
 	}
 
-	Matrix A, B;
-	load_matrices(&A, &B, &op);
+	List m_list;
+	m_list.size = op.matrix_pairs;
+	m_list.A_matrices = calloc(m_list.size, sizeof(Matrix));
+	m_list.B_matrices = calloc(m_list.size, sizeof(Matrix));
+	m_list.output_files = calloc(m_list.size, sizeof(char*));
 
-	// dump_matrix(&A);
-	// dump_matrix(&B);
+	load_pairs(&m_list, op.list_filename);
 
+	// for(int i = 0; i < m_list.size; i++){
+	// 	printf("Saving to: %s\n", m_list.output_files[i]);
+	// 	dump_matrix(&m_list.A_matrices[i]);
+	// 	dump_matrix(&m_list.B_matrices[i]);
+	// }
+	
 	time_t cur_time = time(NULL);
-	create_marker_file(op.out_filename, B.cols);
-	pid_t* workers = calloc(op.proc_num, sizeof(pid_t));
+	pid_t *workers = calloc(op.proc_num, sizeof(pid_t));
 	for(int i = 0; i < op.proc_num; i++){
 		pid_t child = fork();
 		if(child == 0){
-			int mul = worker_cb(op.out_filename, &A, &B, cur_time + op.proc_time);
+			int mul = worker_cb(&m_list, cur_time + op.proc_time);
 			exit(mul);
-		}else{
+		}else if(child > 0){
 			workers[i] = child;
+		}else{
+			printf("Something went wrong during fork\n");
+			exit(EXIT_FAILURE);
 		}
 	}
 
@@ -285,12 +369,20 @@ int main(int argc, char** argv) {
 		printf("Proces %d wykonal %d mnozen macierzy\n", workers[i], WEXITSTATUS(ret_status));
 	}
 	
-	//concat parts here
+	int res = mkdir("./out", 0777);
+	if(res == -1){
+		if(errno == EEXIST){
 
+		}else{
+			printf("Error during creating out folder\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+	for(int i = 0; i < m_list.size; i++){
+		concat_parts(m_list.output_files[i]);
+	}
 	free(workers);
-	free_matrix(&A);
-	free_matrix(&B);
-	free(op.out_filename);
+	free_list(&m_list);
 
 	return 0;
 }

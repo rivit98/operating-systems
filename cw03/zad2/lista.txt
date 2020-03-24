@@ -1,1 +1,2 @@
-macierz_in1.txt macierz_in2.txt macierz_out.txt
+macierz_in1.txt macierz_in2.txt macierz_out1.txt
+macierz_in3.txt macierz_in4.txt macierz_out2.txt
