@@ -12,7 +12,7 @@ void generate_records(const char* filename, int records, int record_size){
 	}
 
 	char command[256];
-	snprintf(command, sizeof command, "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w %d | head -n %d > %s", record_size, records, filename);
+	snprintf(command, sizeof command, "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w %d | head -n %d > %s", record_size, records, filename);
 	int ret = system(command);
 	if(ret != 0){
 		printf("Error during generating file\n");

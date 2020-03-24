@@ -105,11 +105,12 @@ void find_files_rec(const char* dir_name, const Options* op, struct stat* lstat_
 			if((op->options_enabled & (1 << MAXDEPTH) && depth > 0) || !(op->options_enabled & (1 << MAXDEPTH))){
 				find_files_rec(fname, op, lstat_buffer, depth-1);
 			}
-		}else{
+		}
+		// }else{
 			if(check_conditions(fname, op, lstat_buffer)){
 				print_file_info(fname, op, lstat_buffer);
 			}
-		}
+		// }
 	}
 
 	closedir(dir);
@@ -130,9 +131,9 @@ static int display_info(const char* fpath, const struct stat* sb, int tflag, str
 		return 0; 
 	}
 
-	if(tflag == FTW_D){
-		return 0;
-	}
+	// if(tflag == FTW_D){
+	// 	return 0;
+	// }
 
 	if(check_conditions(fpath, ntfw_options, sb)){
 		print_file_info(fpath, ntfw_options, sb);
