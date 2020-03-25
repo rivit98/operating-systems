@@ -310,7 +310,6 @@ unsigned int worker_cb(List *list, time_t deadline){
 
 	return ret;
 }
-
 void concat_parts(char* out_filename){
 	char command[MAX_LINE_LEN];
 	sprintf(command, "paste -d \" \" ./%s/%s_* > ./out/%s", temp_folder, out_filename, out_filename);
@@ -382,7 +381,7 @@ int main(int argc, char **argv) {
 			exit(EXIT_FAILURE);
 		}
 	}
-	
+
 	printf("Concatenating parts...\n");
 	for(int i = 0; i < m_list.size; i++){
 		concat_parts(m_list.output_files[i]);

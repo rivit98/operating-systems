@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wno-unused-variable -ggdb
+CFLAGS=-Wall -Wno-unused-variable
 
 all: clean
 	$(CC) $(CFLAGS) macierz.c -o macierz
@@ -7,11 +7,11 @@ all: clean
 	$(CC) $(CFLAGS) generator.c -o generator
 
 clean:
-	rm -rf macierz tester generator *.o ./tmp ./out ./data
+	rm -rf macierz tester generator lista.txt *.o ./tmp ./out ./data
 
 test: clean all
 	@echo ""; echo Generuje macierze...
-	./generator 1 200 300
+	./generator 1 100 200
 
 	@echo ""; echo Mnoze macierze...
 	./macierz lista.txt 10 50
