@@ -3,8 +3,6 @@ import numpy as np
 with open("./lista.txt", "rt") as f:
     listfile = f.readlines()
 
-print(listfile)
-
 for list_entry in listfile:
     e = list_entry.strip()
     parts = e.split()
