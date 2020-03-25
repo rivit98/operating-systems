@@ -1,14 +1,25 @@
 CC=gcc
 CFLAGS=-Wall -Wno-unused-variable -ggdb
 
-all:
+all: clean
 	$(CC) $(CFLAGS) macierz.c -o macierz
+	$(CC) $(CFLAGS) tester.c -o tester
+	$(CC) $(CFLAGS) generator.c -o generator
 
 clean:
-	rm -rf macierz *.o ./tmp ./out
+	rm -rf macierz tester generator *.o ./tmp ./out ./data
 
 test: clean all
-	./macierz lista.txt 2 5
+	@echo ""; echo Generuje macierze...
+	./generator 1 200 300
+
+	@echo ""; echo Mnoze macierze...
+	./macierz lista.txt 10 50
+
+	@echo ""; echo Sprawdzam poprawnosc...
+	./tester lista.txt
 
 valgrind: clean all
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./macierz lista.txt 2 5
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./generator 1 20 50
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./macierz lista.txt 3 120
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./tester lista.txt
