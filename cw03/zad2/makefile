@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wno-unused-variable -ggdb
+CFLAGS=-Wall -Wno-unused-variable
 
 all:
 	$(CC) $(CFLAGS) macierz.c -o macierz
