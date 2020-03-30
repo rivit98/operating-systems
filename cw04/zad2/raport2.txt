@@ -1,0 +1,6 @@
+fork:
+- ignorowanie, chwytanie, maskowanie jest dziedziczone w procesie potomnym
+- sygnaly oczekujace nie sa przekazywane do potomka
+
+exec:
+- ignorowanie, maskowanie, sygnal oczekujacy jest dziedziczone
