@@ -1,0 +1,3 @@
+ls -al | sort -n | uniq
+ps a | sort | uniq | cat
+cat ./makefile | sort | cat | sort | cat | uniq
