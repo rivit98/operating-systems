@@ -8,8 +8,6 @@ all:
 
 clean:
 	rm -f consumer producer runner *.o
-	rm -f mkfifo_pipe
 
 test: clean all
-	mkfifo mkfifo_pipe
 	./runner
