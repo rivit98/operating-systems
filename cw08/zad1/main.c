@@ -197,11 +197,11 @@ void save_histogram(const char *out){
         ForRange(0, MAX_COLORS){
             if(RES_HEIGHT - row < RES_HEIGHT * (histogram[i] / max_d)){
                 For(k, 0, RES_WIDTH_MULT, 1){
-                    fprintf(f, "%d ", histogram[i]);
+                    fputs("255 ", f);
                 }
             }else{
                 For(k, 0, RES_WIDTH_MULT, 1){
-                    fprintf(f, "0 ");
+                    fputs("0 ", f);
                 }
             }
         }
