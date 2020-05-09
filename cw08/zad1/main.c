@@ -204,8 +204,8 @@ void save_histogram(const char *out){
                     fputs("0 ", f);
                 }
             }
+        	fputs("\n", f);
         }
-        fputs("\n", f);
     }
 
     fclose(f);

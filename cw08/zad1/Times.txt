@@ -1,93 +1,93 @@
 Processing file with 1 threads using sign
-Thread 140275441514240 took 2790 microseconds
-Main thread took 3014 microseconds
+Thread 140118388066048 took 2791 microseconds
+Main thread took 2955 microseconds
 
 
 Processing file with 1 threads using block
-Thread 140166560970496 took 2258 microseconds
-Main thread took 2455 microseconds
+Thread 139970396370688 took 2213 microseconds
+Main thread took 2447 microseconds
 
 
 Processing file with 1 threads using interleaved
-Thread 140370311014144 took 2279 microseconds
-Main thread took 2476 microseconds
+Thread 140550671636224 took 2276 microseconds
+Main thread took 2468 microseconds
 
 
 Processing file with 2 threads using sign
-Thread 140639583454976 took 2502 microseconds
-Thread 140639575062272 took 2946 microseconds
-Main thread took 3123 microseconds
+Thread 139933017736960 took 2466 microseconds
+Thread 139933009344256 took 2892 microseconds
+Main thread took 3148 microseconds
 
 
 Processing file with 2 threads using block
-Thread 140539874461440 took 2562 microseconds
-Thread 140539866068736 took 2630 microseconds
-Main thread took 2855 microseconds
+Thread 140685430998784 took 2730 microseconds
+Thread 140685422606080 took 2699 microseconds
+Main thread took 2890 microseconds
 
 
 Processing file with 2 threads using interleaved
-Thread 139955027592960 took 2758 microseconds
-Thread 139955019200256 took 2722 microseconds
-Main thread took 2956 microseconds
+Thread 140697125877504 took 2476 microseconds
+Thread 140697117484800 took 2598 microseconds
+Main thread took 2744 microseconds
 
 
 Processing file with 4 threads using sign
-Thread 139738203502336 took 2283 microseconds
-Thread 139738195109632 took 5458 microseconds
-Thread 139738186716928 took 2883 microseconds
-Thread 139738178324224 took 2632 microseconds
-Main thread took 5704 microseconds
+Thread 140077591873280 took 2353 microseconds
+Thread 140077583480576 took 2536 microseconds
+Thread 140077575087872 took 2842 microseconds
+Thread 140077566695168 took 2603 microseconds
+Main thread took 5613 microseconds
 
 
 Processing file with 4 threads using block
-Thread 140159678609152 took 1349 microseconds
-Thread 140159670216448 took 1461 microseconds
-Thread 140159661823744 took 1225 microseconds
-Thread 140159653431040 took 1239 microseconds
-Main thread took 2924 microseconds
+Thread 139832044148480 took 1393 microseconds
+Thread 139832035755776 took 2214 microseconds
+Thread 139832027363072 took 583 microseconds
+Thread 139832018970368 took 866 microseconds
+Main thread took 3000 microseconds
 
 
 Processing file with 4 threads using interleaved
-Thread 140131960837888 took 1406 microseconds
-Thread 140131952445184 took 1409 microseconds
-Thread 140131944052480 took 551 microseconds
-Thread 140131935659776 took 533 microseconds
-Main thread took 2797 microseconds
+Thread 140361818793728 took 1409 microseconds
+Thread 140361810401024 took 2515 microseconds
+Thread 140361802008320 took 908 microseconds
+Thread 140361793615616 took 1060 microseconds
+Main thread took 2946 microseconds
 
 
 Processing file with 8 threads using sign
-Thread 139708566169344 took 2092 microseconds
-Thread 139708557776640 took 6758 microseconds
-Thread 139708549383936 took 2430 microseconds
-Thread 139708540991232 took 2479 microseconds
-Thread 139708532598528 took 2554 microseconds
-Thread 139708524205824 took 2781 microseconds
-Thread 139708515813120 took 2602 microseconds
-Thread 139708507420416 took 1956 microseconds
-Main thread took 9925 microseconds
+Thread 139643870013184 took 2132 microseconds
+Thread 139643861620480 took 2290 microseconds
+Thread 139643853227776 took 2460 microseconds
+Thread 139643844835072 took 2528 microseconds
+Thread 139643836442368 took 3291 microseconds
+Thread 139643828049664 took 2881 microseconds
+Thread 139643819656960 took 2694 microseconds
+Thread 139643811264256 took 2491 microseconds
+Main thread took 9594 microseconds
 
 
 Processing file with 8 threads using block
-Thread 140572492506880 took 853 microseconds
-Thread 140572484114176 took 854 microseconds
-Thread 140572475721472 took 696 microseconds
-Thread 140572467328768 took 2222 microseconds
-Thread 140572458936064 took 700 microseconds
-Thread 140572450543360 took 644 microseconds
-Thread 140572442150656 took 606 microseconds
-Thread 140572433757952 took 640 microseconds
-Main thread took 3404 microseconds
+Thread 140425876330240 took 784 microseconds
+Thread 140425867937536 took 812 microseconds
+Thread 140425859544832 took 600 microseconds
+Thread 140425851152128 took 593 microseconds
+Thread 140425842759424 took 627 microseconds
+Thread 140425834366720 took 570 microseconds
+Thread 140425825974016 took 636 microseconds
+Thread 140425817581312 took 641 microseconds
+Main thread took 2908 microseconds
 
 
 Processing file with 8 threads using interleaved
-Thread 139635118634752 took 660 microseconds
-Thread 139635110242048 took 642 microseconds
-Thread 139635101849344 took 618 microseconds
-Thread 139635093456640 took 681 microseconds
-Thread 139635085063936 took 644 microseconds
-Thread 139635076671232 took 590 microseconds
-Thread 139635068278528 took 581 microseconds
-Thread 139635059885824 took 598 microseconds
-Main thread took 2850 microseconds
+Thread 139767571597056 took 708 microseconds
+Thread 139767563204352 took 684 microseconds
+Thread 139767554811648 took 692 microseconds
+Thread 139767546418944 took 677 microseconds
+Thread 139767538026240 took 696 microseconds
+Thread 139767529633536 took 674 microseconds
+Thread 139767521240832 took 720 microseconds
+Thread 139767512848128 took 724 microseconds
+Main thread took 3125 microseconds
 
 
