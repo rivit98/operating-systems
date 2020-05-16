@@ -31,14 +31,12 @@ int get_random_time(int k){
 }
 
 int get_free_place(void){
-    int free_index = -1;
     ForRange(0, queue.max_size){
         if(queue.data[i] == 0){
-            free_index = i;
-            break;
+            return i;
         }
     }
-    return free_index;
+    return -1;
 }
 
 int get_waiting_client(void){
@@ -92,7 +90,7 @@ void client_worker(int *tid){
     queue.data[free_index] = id;
     queue.size++;
 
-    if(queue.size == 1 && !barber_working){
+    if(queue.size >= 1 && !barber_working){
         printf("Client: Waking up barber; %d\n", id);
         pthread_cond_signal(&somebody_in_queue);
 //        pthread_cond_broadcast(&somebody_in_queue);
