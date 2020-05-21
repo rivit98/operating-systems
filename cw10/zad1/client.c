@@ -1,27 +1,20 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <sys/un.h>
-#include <arpa/inet.h>
 
 #include "common.h"
 
 
-int remote_socket = -1;
+int server_socket_fd = -1;
+const char *name;
 
 void init_socket(const char *type, const char *dest){
     if(type[0] == 'l'){ //local
         struct sockaddr_un serveraddr;
 
-        remote_socket = socket(AF_UNIX, SOCK_STREAM, 0);
+        server_socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
         memset(&serveraddr, 0, sizeof(serveraddr));
         serveraddr.sun_family = AF_UNIX;
         strcpy(serveraddr.sun_path, dest);
 
-        connect(remote_socket, (const struct sockaddr *) &serveraddr, SUN_LEN(&serveraddr));
+        connect(server_socket_fd, (const struct sockaddr *) &serveraddr, SUN_LEN(&serveraddr));
     }else{ //network
         char ip_s[32] = {};
         char port_s[16] = {};
@@ -36,8 +29,8 @@ void init_socket(const char *type, const char *dest){
             exit(EXIT_FAILURE);
         }
 
-        remote_socket = socket(AF_INET, SOCK_STREAM, 0);
-        if(remote_socket == -1){
+        server_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+        if(server_socket_fd == -1){
             perror("Init socket");
             exit(EXIT_FAILURE);
         }
@@ -47,12 +40,18 @@ void init_socket(const char *type, const char *dest){
         sock_info.sin_addr.s_addr = ip;
         sock_info.sin_port = htons(port);
 
-        int ret = connect(remote_socket, (struct sockaddr*)&sock_info, sizeof(struct sockaddr));
+        int ret = connect(server_socket_fd, (struct sockaddr*)&sock_info, sizeof(struct sockaddr));
         if(ret == -1){
             perror("connect socket");
             exit(EXIT_FAILURE);
         }
     }
+}
+
+void send_message(kCommand c, const char* arg){
+    char msg[MAX_MESSAGE_LEN];
+    snprintf(msg, MAX_MESSAGE_LEN, "%d|%s|%s", c, name, arg == NULL ? "" : arg);
+    send(server_socket_fd, msg, MAX_MESSAGE_LEN, 0);
 }
 
 void signal_handler(){
@@ -61,9 +60,9 @@ void signal_handler(){
 }
 
 void cleanup(void){
-    if(remote_socket != -1){
-        shutdown(remote_socket, SHUT_RDWR);
-        close(remote_socket);
+    if(server_socket_fd != -1){
+        send_message(DISCONNECT, NULL);
+        close_socket(server_socket_fd);
     }
 
     printf("cleanup\n");
@@ -80,21 +79,63 @@ int main(int argc, char **argv){
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-    char buffer[MAX_MESSAGE_LEN];
-    char *name = argv[1];
+    name = argv[1];
     char *type = argv[2];
     char *dest = argv[3];
 
     init_socket(type, dest);
-    sprintf(buffer, "%d|%s||", REGISTER_CLIENT, name);
-    send(remote_socket, buffer, MAX_MESSAGE_LEN, 0);
 
+    send_message(REGISTER_CLIENT, NULL);
+
+    char buffer[MAX_MESSAGE_LEN] = {};
     while(1){
-        puts("sending");
-        sprintf(buffer, "%d|%s||", 13, name);
-        send(remote_socket, buffer, 32, 0);
+        if(recv(server_socket_fd, buffer, MAX_MESSAGE_LEN, 0) == 0){
+            continue;
+        }
 
-        sleep(2);
+        kCommand cmd = atoi(strtok(&buffer[0], "|"));
+        const char *args = strtok(NULL, "|");
+        printf("parsed: %d '%s'\n", cmd, (args == NULL) ? "NULL" : args);
+
+        switch (cmd) {
+            case NO_FREE_SLOTS:{
+                printf("No free slots :(\n");
+                exit(0);
+            }
+            case NAME_IN_USE:{
+                printf("Name [%s] in use\n", name);
+                exit(0);
+            }
+            case SERVER_SHUTDOWN:{
+                printf("Server shutting down!\n");
+                close_socket(server_socket_fd);
+                _exit(0); // cleanup() cannot be used
+            }
+
+            case TIMEOUT:{
+                printf("Kicked due to inactivity!\n");
+                close_socket(server_socket_fd);
+                _exit(0); // cleanup() cannot be used
+            }
+
+            case OPP_DISCONNECTED:{
+                printf("Your opponent has disconnected\n");
+                exit(0);
+            }
+
+            case START_GAME:{
+                //TODO: start new thread with game routine
+                break;
+            }
+
+            case PING:{
+                send_message(PING, NULL);
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 
     return 0;
