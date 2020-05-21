@@ -85,7 +85,6 @@ void cleanup(void){
         }
     }
 
-    printf("cleanup\n");
     exit(0);
 }
 
@@ -201,6 +200,7 @@ void assign_opp(int cid){
         printf("START_GAME: %s vs %s\n", clients[cid].name, clients[found_opp].name);
     }else{
         printf("'%s' waiting for game\n", clients[cid].name);
+        send_message(clients[cid].sock_fd, WAITING_FOR_OPPONENT, NULL);
     }
 }
 
@@ -225,8 +225,6 @@ void *ping_thread(){
         pthread_mutex_unlock(&client_array_mutex);
         sleep(4);
     }
-
-    return NULL;
 }
 
 int main(int argc, char **argv){
@@ -246,7 +244,7 @@ int main(int argc, char **argv){
     printf("SERVER STARTED\n");
 
     pthread_t ping_thread_id;
-    pthread_create(&ping_thread_id, NULL, ping_thread, NULL);
+//    pthread_create(&ping_thread_id, NULL, ping_thread, NULL);
 
     char buffer[MAX_MESSAGE_LEN] = {};
     memset(clients, 0, sizeof(Client) * MAX_CLIENTS);
@@ -265,7 +263,7 @@ int main(int argc, char **argv){
         const char *args = strtok(NULL, "|");
         int cid = get_client_by_name(name);
 
-        printf("parsed: %d '%s' '%s'\n", cmd, name, (args == NULL) ? "NULL" : args);
+//        printf("parsed: %d '%s' '%s'\n", cmd, name, (args == NULL) ? "NULL" : args);
 
         pthread_mutex_lock(&client_array_mutex);
 
@@ -311,12 +309,17 @@ int main(int argc, char **argv){
                 break;
             }
 
+            case MOVE:{
+                printf("MOVE: %d -> %s\n", cid, args);
+                int opp = clients[cid].opp_index;
+                send_message(clients[opp].sock_fd, MOVE, args);
+                break;
+            }
+
             default:
                 break;
         }
 
         pthread_mutex_unlock(&client_array_mutex);
     }
-
-    return 0;
 }

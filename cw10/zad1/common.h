@@ -19,13 +19,14 @@ typedef enum{
     REGISTER_CLIENT = 0,
     NAME_IN_USE,
     NO_FREE_SLOTS,
+    WAITING_FOR_OPPONENT,
     DISCONNECT,
     START_GAME,
     SERVER_SHUTDOWN,
     PING,
     TIMEOUT,
-    OPP_DISCONNECTED
-
+    OPP_DISCONNECTED,
+    MOVE
 } kCommand;
 
 typedef enum{
