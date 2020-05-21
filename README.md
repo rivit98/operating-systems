@@ -1,7 +1,7 @@
 # Operating Systems, AGH UST, 2020
 Tasks + solutions
 
-* [lab1](./cw01): gcc/g++ options, gdb, make, memory managing, libraries (shared, static, dynami), time measurement
+* [lab1](./cw01): gcc options, gdb, make, memory managing, libraries (shared, static, dynamic), time measurement
 * [lab2](./cw02): files
 * [lab3](./cw03): processes
 * [lab4](./cw04): signals
