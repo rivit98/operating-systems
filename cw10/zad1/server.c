@@ -2,7 +2,6 @@
 
 #include "common.h"
 
-
 int network_socket_fd = -1;
 int local_socket_fd = -1;
 
@@ -85,6 +84,7 @@ void cleanup(void){
         }
     }
 
+    perror("TEMP");
     exit(0);
 }
 
@@ -111,6 +111,12 @@ void init_network_socket(const char * port){
     network_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if(network_socket_fd == -1){
         perror("Init socket");
+        exit(EXIT_FAILURE);
+    }
+
+    int enable = 1;
+    if (setsockopt(network_socket_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&enable, sizeof(int)) < 0) {
+        perror("setsockopt");
         exit(EXIT_FAILURE);
     }
 
@@ -162,13 +168,13 @@ int get_client_by_name(const char *name){
     return -1;
 }
 
-void remove_client(int cid){
+void remove_client(int cid, bool removeOpp){
     if(clients[cid].status == NOT_CONNECTED){
         return;
     }
 
     int opp = clients[cid].opp_index;
-    if(opp != NO_OPP){
+    if(removeOpp && opp != NO_OPP){
         printf("OPP_DISCONNECTED: %s\n", clients[opp].name);
         send_message(clients[opp].sock_fd, OPP_DISCONNECTED, NULL);
         free(clients[opp].name);
@@ -210,20 +216,20 @@ void *ping_thread(){
 
         for(int i = 0 ; i < MAX_CLIENTS; i++){
             if(clients[i].status == CONNECTED){
-                if(clients[i].ping != PING_GOT && clients[i].ping != NO_PING){
-                    printf("Dropped client %s\n", clients[i].name);
+                if(clients[i].ping == PING_SENT){
                     send_message(clients[i].sock_fd, TIMEOUT, NULL);
-                    remove_client(i);
-                }else{
-                    printf("PING: %s\n", clients[i].name);
+                    printf("Dropped client %s\n", clients[i].name);
+                    remove_client(i, true);
+                }else /*if(clients[i].ping == PING_GOT)*/{
                     send_message(clients[i].sock_fd, PING, NULL);
+                    printf("PING: %s\n", clients[i].name);
                     clients[i].ping = PING_SENT;
                 }
             }
         }
 
         pthread_mutex_unlock(&client_array_mutex);
-        sleep(4);
+        sleep(3);
     }
 }
 
@@ -244,7 +250,7 @@ int main(int argc, char **argv){
     printf("SERVER STARTED\n");
 
     pthread_t ping_thread_id;
-//    pthread_create(&ping_thread_id, NULL, ping_thread, NULL);
+    pthread_create(&ping_thread_id, NULL, ping_thread, NULL);
 
     char buffer[MAX_MESSAGE_LEN] = {};
     memset(clients, 0, sizeof(Client) * MAX_CLIENTS);
@@ -295,14 +301,15 @@ int main(int argc, char **argv){
             case DISCONNECT:{
                 if(cid != -1){
                     printf("DISCONNECT: %s, fd=%d\n", name, remote_fd);
-                    remove_client(cid);
+                    bool removeOpp = atoi(args) == GAME_FINISHED ? false : true;
+                    remove_client(cid, removeOpp);
                 }
                 break;
             }
 
             case PING:{
                 if(cid != -1){
-                    printf("PING REPLY: %s\n", name);
+                    printf("PING REPLY cid=%d\n", cid);
                     clients[cid].status = CONNECTED;
                     clients[cid].ping = PING_GOT;
                 }

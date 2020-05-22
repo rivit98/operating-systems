@@ -9,6 +9,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <arpa/inet.h>
+#include <stdbool.h>
+
 
 
 #define MAX_CONNECTIONS 64
@@ -39,10 +41,25 @@ enum{
 } kOppStatus;
 
 typedef enum{
-    NO_PING = 0,
-    PING_SENT,
-    PING_GOT
+    PING_GOT = 0,
+    PING_SENT
 } kPingStatus;
+
+typedef enum {
+    YOUR_MOVE = 0,
+    OPP_MOVE,
+    GAME_FINISHED
+} kGameStatus;
+
+#define BOARD_SIZE 3 //dont change pls
+typedef enum{
+    EMPTY = 0,
+    X,
+    O
+} kSymbol;
+const char symbols_str[3] = {' ', 'X', 'O'};
+
+
 
 void close_socket(int fd){
     shutdown(fd, SHUT_RDWR);

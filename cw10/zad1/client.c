@@ -1,26 +1,9 @@
-#include <stdbool.h>
-
 #include "common.h"
-
-typedef enum {
-    YOUR_MOVE = 0,
-    OPP_MOVE,
-    GAME_FINISHED
-} kGameStatus;
 
 int server_socket_fd = -1;
 const char *name;
 int opp_move = -1;
 kGameStatus game_status;
-
-#define BOARD_SIZE 3
-typedef enum{
-    EMPTY = 0,
-    X,
-    O
-} kSymbol;
-const char symbols_str[3] = {' ', 'X', 'O'};
-
 
 kSymbol board[BOARD_SIZE][BOARD_SIZE];
 kSymbol playing_as = EMPTY;
@@ -92,7 +75,10 @@ void signal_handler(){
 
 void cleanup(void){
     if(server_socket_fd != -1){
-        send_message(DISCONNECT, NULL);
+        char a[3];
+        sprintf(a, "%d", game_status);
+        a[1] = '\0';
+        send_message(DISCONNECT, a);
         close_socket(server_socket_fd);
     }
 
@@ -114,6 +100,7 @@ bool valid_move(int idx){
 }
 
 void print_board(){
+    puts("-------");
     for(int x = 0; x < BOARD_SIZE; x++){
         for(int y = 0; y < BOARD_SIZE; y++){
             if(board[x][y] == EMPTY){
@@ -124,23 +111,106 @@ void print_board(){
         }
         puts("|\n-------");
     }
-    puts("");
 }
 
-void make_move(int idx){
-    int x = idx / 3;
-    int y = idx % 3;
+void make_move(int idx, kSymbol who){
+    board[idx / 3][idx % 3] = who;
+}
 
-    board[x][y] = playing_as;
+kSymbol check_rows(){
+    for(int x = 0; x < BOARD_SIZE; x++){
+        if(board[x][0] == EMPTY){
+            return EMPTY;
+        }
+
+        if(board[x][0] == board[x][1] && board[x][1] == board[x][2]){
+            return board[x][0];
+        }
+    }
+    return EMPTY;
+}
+
+kSymbol check_cols(){
+    for(int y = 0; y < BOARD_SIZE; y++){
+        if(board[0][y] == EMPTY){
+            return EMPTY;
+        }
+
+        if(board[0][y] == board[1][y] && board[1][y] == board[2][y]){
+            return board[0][y];
+        }
+    }
+    return EMPTY;
+}
+
+kSymbol check_diag(){
+    if(board[1][1] == EMPTY){
+        return EMPTY;
+    }
+
+    if(board[0][0] == board[1][1] && board[1][1] == board[2][2]){
+        return board[1][1];
+    }
+
+    if(board[2][0] == board[1][1] && board[1][1] == board[0][2]){
+        return board[1][1];
+    }
+
+    return EMPTY;
+}
+
+kSymbol get_winner(){
+    kSymbol ret = check_rows();
+    if(ret != EMPTY){
+        return ret;
+    }
+
+    ret = check_cols();
+    if(ret != EMPTY){
+        return ret;
+    }
+
+    ret = check_diag();
+    if(ret != EMPTY){
+        return ret;
+    }
+
+    return EMPTY;
+}
+
+bool game_end_check(){
+    kSymbol winner = get_winner();
+    if(winner != EMPTY){
+        if(winner == playing_as){
+            puts("Congratulations! You won!");
+        }else{
+            puts("Looooser!");
+        }
+        return true;
+    }
+
+    bool draw = true;
+    for(int x = 0; x < BOARD_SIZE; x++){
+        for(int y = 0; y < BOARD_SIZE; y++){
+            if(board[x][y] == EMPTY){
+                draw = false;
+                break;
+            }
+        }
+    }
+
+    if(draw){
+        puts("Draw!");
+        return true;
+    }
+
+    return false;
 }
 
 void *game_thread(){
     while(game_status != GAME_FINISHED){
         switch (game_status) {
             case YOUR_MOVE:{
-
-                print_board();
-
                 int move;
                 do{
                     printf("Enter your move: ");
@@ -149,11 +219,11 @@ void *game_thread(){
                     move--;
                 }while(!valid_move(move));
 
-                make_move(move);
+                make_move(move, playing_as);
 
                 char move_c[3];
                 sprintf(move_c, "%d", move);
-                move_c[2] = '\0';
+                move_c[1] = '\0';
                 send_message(MOVE, &move_c[0]);
 
                 print_board();
@@ -167,30 +237,26 @@ void *game_thread(){
                 while(opp_move == -1){
                     pthread_cond_wait(&opp_made_move, &message_loop);
                 }
+                pthread_mutex_unlock(&message_loop);
 
-                printf("OPP MOVE: %d\n", opp_move);
-                make_move(opp_move);
+                printf("Opponent selected: %d\n", opp_move+1);
+                make_move(opp_move, (playing_as == X) ? O : X);
                 print_board();
 
                 opp_move = -1;
-                pthread_mutex_unlock(&message_loop);
                 game_status = YOUR_MOVE;
                 break;
             }
-
             default:
                 break;
         }
 
-
-        //TODO: check status of the game
-
+        if(game_end_check()){
+            game_status = GAME_FINISHED;
+        }
     }
 
-    //TODO: print winner
-    //TODO: disconnect
     cleanup();
-
     return NULL;
 }
 
@@ -220,15 +286,15 @@ int main(int argc, char **argv){
         }
 
         kCommand cmd = atoi(strtok(&buffer[0], "|"));
-        const char *args = strtok(NULL, "|"); //TODO: move to move handler
+        const char *args = strtok(NULL, "|");
 //        printf("parsed: %d '%s'\n", cmd, (args == NULL) ? "NULL" : args);
 
-        pthread_mutex_lock(&message_loop);
         switch (cmd) {
             case NO_FREE_SLOTS:{
                 printf("No free slots :(\n");
                 exit(0);
             }
+
             case NAME_IN_USE:{
                 printf("Name [%s] in use\n", name);
                 exit(0);
@@ -263,6 +329,7 @@ int main(int argc, char **argv){
                 }
 
                 memset(board, 0, sizeof(kSymbol) * BOARD_SIZE * BOARD_SIZE);
+                print_board();
 
                 if(strcmp(args, "X") == 0){
                     game_status = YOUR_MOVE;
@@ -278,8 +345,13 @@ int main(int argc, char **argv){
             }
 
             case MOVE:{
+                pthread_mutex_lock(&message_loop);
+
                 opp_move = atoi(args);
                 pthread_cond_signal(&opp_made_move);
+
+                pthread_mutex_unlock(&message_loop);
+
                 break;
             }
 
@@ -291,8 +363,5 @@ int main(int argc, char **argv){
             default:
                 break;
         }
-        pthread_mutex_unlock(&message_loop);
     }
-
-    return 0;
 }
