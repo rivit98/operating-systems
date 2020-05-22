@@ -1,7 +1,7 @@
 CW_NUM=10
 
 all:
-	cp -r ../GierlachAlbert/cw$(CW_NUM) .
+	cp -r ../cw$(CW_NUM) .
 	rm -rf GierlachAlbert-cw$(CW_NUM).tar.gz
 	mkdir GierlachAlbert
 	cp -r cw$(CW_NUM) ./GierlachAlbert
