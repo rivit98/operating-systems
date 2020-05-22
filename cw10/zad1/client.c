@@ -69,8 +69,6 @@ void send_message(kCommand c, const char* arg){
     send(server_socket_fd, msg, MAX_MESSAGE_LEN, 0);
 }
 
-void cleanup(void);
-
 void signal_handler(){
     exit(0);
 }
