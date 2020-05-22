@@ -84,7 +84,6 @@ void cleanup(void){
         }
     }
 
-    perror("TEMP");
     exit(0);
 }
 
@@ -215,21 +214,24 @@ void *ping_thread(){
         pthread_mutex_lock(&client_array_mutex);
 
         for(int i = 0 ; i < MAX_CLIENTS; i++){
-            if(clients[i].status == CONNECTED){
-                if(clients[i].ping == PING_SENT){
-                    send_message(clients[i].sock_fd, TIMEOUT, NULL);
-                    printf("Dropped client %s\n", clients[i].name);
-                    remove_client(i, true);
-                }else /*if(clients[i].ping == PING_GOT)*/{
-                    send_message(clients[i].sock_fd, PING, NULL);
-                    printf("PING: %s\n", clients[i].name);
-                    clients[i].ping = PING_SENT;
-                }
+            if(clients[i].status == CONNECTED && clients[i].ping == PING_SENT){
+                send_message(clients[i].sock_fd, TIMEOUT, NULL);
+                printf("Dropped client %s\n", clients[i].name);
+                remove_client(i, true);
+            }
+        }
+
+        for(int i = 0 ; i < MAX_CLIENTS; i++){
+            if(clients[i].status == CONNECTED && clients[i].ping == PING_GOT){
+                send_message(clients[i].sock_fd, PING, NULL);
+                printf("PING: %s\n", clients[i].name);
+                clients[i].ping = PING_SENT;
             }
         }
 
         pthread_mutex_unlock(&client_array_mutex);
-        sleep(3);
+
+        sleep(2);
     }
 }
 

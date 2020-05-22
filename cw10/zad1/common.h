@@ -59,8 +59,6 @@ typedef enum{
 } kSymbol;
 const char symbols_str[3] = {' ', 'X', 'O'};
 
-
-
 void close_socket(int fd){
     shutdown(fd, SHUT_RDWR);
     close(fd);
