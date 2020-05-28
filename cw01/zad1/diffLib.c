@@ -56,8 +56,8 @@ void free_block(void) {
 		free(main_block_entry);
 	}
 
-	free(mb->entries); 	//zwolnij pamiec zajmowana na glowny blok
-	free(mb); 			//zwolnij wskaznik na glowny blok
+	free(mb->entries);
+	free(mb);
 }
 
 void define_pairs_sequence(char** pairs, int len) {
@@ -138,7 +138,7 @@ MainBlockEntry* compare_one_pair(char* pair){
 
 	char cmd[256];
 	sprintf(cmd, "diff %s %s > %s", filename[0], filename[1], tempFile);
-	system(cmd); // TODO: check return status here
+	system(cmd);
 
 	FILE* fp = fopen(tempFile, "r");
 	if (!fp) {
@@ -178,8 +178,6 @@ void fillEntryBlock(MainBlockEntry* block, char* buffer, int buf_len) {
 		fprintf(stderr, "Compiling regex error | %s\n", errmsg);
 		exit(1);
 	}
-
-	// TODO: Pomyslec jak to zrobic wszystko w jednej petli, realloc ?
 
 	int numblocks = 0;
 	const char separator[3] = "\r\n";

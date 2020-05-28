@@ -7,3 +7,5 @@
 *.rar
 *.zip
 *.gz
+cmake-build-debug
+.idea

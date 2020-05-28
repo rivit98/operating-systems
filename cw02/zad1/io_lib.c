@@ -85,13 +85,11 @@ int partition_lib(FILE* f, int l, int h, int record_size){
 }
 
 void read_line_lib(FILE* f, int line, char* buffer, int size){
-	// TODO: add proper error handling here
 	fseek(f, line*size, 0);
 	fread(buffer, sizeof(char), size, f);
 }
 
 void save_line_lib(FILE* f, int line, char* buffer, int size){
-	// TODO: add proper error handling here
 	fseek(f, line*size, 0);
 	fwrite(buffer, sizeof(char), size, f);
 }
@@ -142,13 +140,11 @@ int partition_sys(int f, int l, int h, int record_size){
 }
 
 void read_line_sys(int f, int line, char* buffer, int size){
-	// TODO: add proper error handling here
 	lseek(f, line*size, 0);
 	read(f, buffer, size);
 }
 
 void save_line_sys(int f, int line, char* buffer, int size){
-	// TODO: add proper error handling here
 	lseek(f, line*size, 0);
 	write(f, buffer, size);
 }

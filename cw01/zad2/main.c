@@ -29,7 +29,11 @@ double calc_time(clock_t s, clock_t e) {
 }
 
 void print_times(const char* operation){
-	printf("%20s   real %.3fs   user %.3fs   sys %.3fs\n", operation, calc_time(clock_t_begin, clock_t_end), calc_time(times_start_buffer.tms_cutime, times_end_buffer.tms_cutime), calc_time(times_start_buffer.tms_cstime, times_end_buffer.tms_cstime));
+	printf("%20s   real %.3fs   user %.3fs   sys %.3fs\n",
+			operation,
+			calc_time(clock_t_begin, clock_t_end),
+			calc_time(times_start_buffer.tms_cutime, times_end_buffer.tms_cutime),
+			calc_time(times_start_buffer.tms_cstime, times_end_buffer.tms_cstime));
 }
 #endif
 

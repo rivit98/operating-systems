@@ -83,7 +83,7 @@ void load_pairs(List *list, const char *list_filename){
 	}
 
 	int i = 0;
-	char buffer[MAX_LINE_LEN]; //just hardcode line len
+	char buffer[MAX_LINE_LEN];
 	while(fgets(buffer, sizeof(buffer)-1, fp) != NULL && i < list->size) {
 		load_matrices(&buffer[0], &list->A_matrices[i], &list->B_matrices[i], &list->output_files[i]);
 		i++;
