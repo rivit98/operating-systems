@@ -152,7 +152,9 @@ int execve(char const *path, char const * const *argv, char const * const *envp)
 int execvp(char const *file, char const * const *argv) //analogicznie do execlp, argumenty w tablicy
 
 pid_t wait ( int *statloc ); //czeka na dowolne dziecko BLOKUJE
-pid_t waitpid(child_pid, &status, 0); //czeka na pida, ostatni param to opcje, opcja moze nie blokowac
+pid_t waitpid(child_pid, &status, 0); //czeka na pida, ostatni param to opcje, opcja moze nie blokowac WNOHANG
+// returns 0 on success or if WNOHANG was specified and no child(ren) specified by id has yet changed state
+
 int kill(pid_t pid, int sig);
 int raise( int signal); // jak kill tylko w samego siebie
 int fno = fileno(fp);
@@ -248,7 +250,7 @@ sigismember(&current_signals, SIGUSR1) //sprawdza czy w obecnej strukturze jest 
 // procesy
 int fd[2];
 pipe(fd) //tworzymy pipe [0] - read, [1] - write
-int dup2(int oldfd, int newfd); //duplikuje oldfd do newfd
+int dup2(int oldfd, int newfd); //kopiuje oldfd do newfd,
 FILE *f = popen("asdf", "r"); //tworzy potok, proces, ustawia jego stdin lub stdout na stosowną końcówkę potoku, 'r' czytamy wyjscie, 'w' piszemy do
 pclose(f);
 
