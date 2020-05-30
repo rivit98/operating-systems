@@ -14,16 +14,24 @@ static int num_dir;
 int process(const char *path, const struct stat *stat_buf, int type, struct FTW *ftwp) {
 /*Zlicz pliki regularne i katalogi, zwiększając zmienne num_reg i num_dir.
 Jeśli nie da się otworzyć katalogu zwróć błąd na stdout wraz z wypisaniem tego katalogu */
+    (void) stat_buf;
+    (void) ftwp;
 
-    // chyba nie trzeba otwierac katalogu bo nftw przechodzi rekurencyjnie po plikach wewnatrz tez
-    mode_t mode = stat_buf->st_mode;
-    if (S_ISREG(mode)) {
-        num_reg++;
-    } else if (S_ISDIR(mode)) {
-        num_dir++;
+    switch(type){
+        case FTW_D:{
+            num_dir++;
+            break;
+        }
+        case FTW_F:{
+            num_reg++;
+            break;
+        }
+        case FTW_DNR:{
+            printf("Cannot open %s\n", path);
+        }
     }
 
-    return (0);
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
