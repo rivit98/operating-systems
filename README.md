@@ -10,4 +10,4 @@ Tasks + solutions
 * [lab7](./cw07): inter process communication - shared memory, semaphores (IPC, POSIX)
 * [lab8](./cw08): threads - basics
 * [lab9](./cw09): threads - synchronization methods
-* [lab10](./cw10): sockets, networking
+* [lab10](./cw10): sockets (UDP, TCP), local sockets, networking
