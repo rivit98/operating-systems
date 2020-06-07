@@ -235,7 +235,7 @@ int main(int argc, char *argv[]){
     attr.mq_curmsgs = 0;
 
 
-    sprintf(&fname[0], "/cliennt_%d", getpid());
+    sprintf(&fname[0], "/client_%d", getpid());
     client_queue_id = mq_open(&fname[0], O_RDWR | O_CREAT, PERMISSIONS, &attr);
     printf("Opened queue %s %d\n", fname, client_queue_id);
 

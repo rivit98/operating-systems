@@ -1,6 +1,5 @@
 #include "common.h"
 
-//ye globals, but I don't like passing this all the time...
 static int client_queue_id;
 static int server_queue_id;
 static int client_index;
