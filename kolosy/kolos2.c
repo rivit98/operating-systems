@@ -11,7 +11,7 @@ msgsnd(int msqid, const void *msgp, size_t msgsz, 0);
 // pobiera z kolejki wiadomosc podanego typu (msgtyp) lub pierwsza (msgtyp=0)
 // msgflg=IPC_NOWAIT znaczy ze nie blokuje i jesli errno=ENOMSG to nie ma obecnie zadnej wiadomosci
 ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
-msgctl(int msqid, IPC_RMID, NULL); //usuwa kolejke
+msgctl(msgid, IPC_RMID, NULL); //usuwa kolejke
 
 
 // kolejki komunikatow POSIX

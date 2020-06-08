@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <strings.h>
 #include <pthread.h>
 
 void *hello(void *arg) {
@@ -34,8 +33,6 @@ int main(int argc, char **args) {
     int i;
     pthread_t *tids = calloc(n, sizeof(pthread_t));
     int *ids = calloc(n, sizeof(int));
-    bzero(tids, n);
-    bzero(ids, n);
 
     /**************************************************
         Utworz n watkow realizujacych funkcje hello
